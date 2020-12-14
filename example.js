@@ -18,13 +18,21 @@ const marker = L.marker([0, 0], { icon: issIcon }).addTo(mymap);
 // Fetching api and sets new values of ISS marker on the map
 const url_api = "https://api.wheretheiss.at/v1/satellites/25544";
 
+let flag = true;
 async function getAPI() {
   const response = await fetch(url_api);
   const data = await response.json();
   const { latitude, longitude } = data;
+  if (flag) {
+    mymap.setView([latitude, longitude], 2);
+    flag = false;
+  }
+
   marker.setLatLng([latitude, longitude]);
-  document.getElementById("lon").innerText = longitude;
-  document.getElementById("lat").innerText = latitude;
+  document.getElementById("lon").innerText = longitude.toFixed(2);
+  document.getElementById("lat").innerText = latitude.toFixed(2);
 }
 
 getAPI();
+
+setInterval(getAPI, 1000);
